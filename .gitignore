@@ -1,0 +1,16 @@
+# Archivos compilados de Java
+*.class
+*.log
+*.jar
+*.war
+
+# Carpetas de configuración de IDEs
+.vscode/
+.idea/
+*.iml
+target/
+bin/
+build/
+.settings/
+.classpath
+.project
