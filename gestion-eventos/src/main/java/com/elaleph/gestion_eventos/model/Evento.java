@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "eventos")
-@Data // Esto genera Getters y Setters automáticamente gracias a Lombok
+@Data 
 public class Evento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,4 +17,10 @@ public class Evento {
     private LocalDate fecha;
     private LocalTime hora;
     private String lugar;
+    private Boolean activo = true;
+
+    // Nuevos campos para precios dinámicos
+    private Double precio_adulto;
+    private Double precio_menor;
+    private Double precio_fiesta;
 }

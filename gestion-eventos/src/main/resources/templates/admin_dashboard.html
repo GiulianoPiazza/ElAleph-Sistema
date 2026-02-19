@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Global - El Aleph</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .row-evento-header { background-color: #f8f9fa; font-weight: bold; color: #0d6efd; }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4 shadow">
+        <div class="container">
+            <span class="navbar-brand">🛡️ El Aleph - Control Maestro</span>
+            <div>
+                <a href="/admin/eventos" class="btn btn-outline-info btn-sm mx-1">Eventos</a>
+                <a href="/admin/usuarios" class="btn btn-outline-light btn-sm mx-1">Clientes</a>
+                <a href="/logout" class="btn btn-danger btn-sm mx-1">Salir</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card bg-success text-white shadow border-0 text-center py-3 mb-4">
+            <h4>Total Recaudado (Pagos Aprobados)</h4>
+            <h2 th:text="${'$' + total}">$0.0</h2>
+        </div>
+
+        <div class="card shadow border-0">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Registro de Pagos por Evento</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Invitado</th>
+                            <th>Evento</th>
+                            <th>Entradas</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th class="text-end pe-3">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c, iterStat : ${todasLasCompras}">
+                            <td th:text="${c.usuario?.nombre_completo}"></td>
+                            <td class="fw-bold" th:text="${c.nombre_evento}"></td>
+                            <td th:text="${c.clasificacion}"></td>
+                            <td th:text="${'$' + c.monto_total}"></td>
+                            <td>
+                                <span th:class="${c.estado_pago == 'PENDIENTE' ? 'badge bg-warning text-dark' : 'badge bg-success'}"
+                                      th:text="${c.estado_pago}"></span>
+                            </td>
+                            <td class="text-end pe-3">
+                                <form th:if="${c.estado_pago == 'PENDIENTE'}" th:action="@{/admin/aprobar-pago}" method="post">
+                                    <input type="hidden" name="idCompra" th:value="${c.id_compra}">
+                                    <button type="submit" class="btn btn-sm btn-primary">Aprobar Pago</button>
+                                </form>
+                                <span th:if="${c.estado_pago == 'APROBADO'}" class="text-success small">✅ Verificado</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(todasLasCompras)}">
+                            <td colspan="6" class="text-center py-4 text-muted">No hay registros de compras aún.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

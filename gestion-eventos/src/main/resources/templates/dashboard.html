@@ -2,61 +2,57 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>El Aleph - Mi Evento</title>
+    <title>El Aleph - Gestión de Entradas</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .card-header { font-weight: bold; }
+        .price-tag { color: #198754; font-weight: bold; }
+    </style>
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-dark bg-dark mb-4 shadow">
         <div class="container">
-            <span class="navbar-brand">El Aleph - Gestión de Eventos</span>
+            <span class="navbar-brand">✨ El Aleph - Bienvenido, <span th:text="${usuario.nombre_completo}"></span></span>
+            <a href="/logout" class="btn btn-outline-danger btn-sm">Cerrar Sesión</a>
         </div>
     </nav>
 
     <div class="container">
-        <div th:if="${param.exito}" class="alert alert-success alert-dismissible fade show" role="alert">
-            ¡Compra registrada! La empresa ha sido notificada.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
-        <div class="row">
+        <div class="row g-4">
             <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header bg-primary text-white">1. Mi Evento</div>
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-header bg-primary text-white">📍 Datos del Evento</div>
                     <div class="card-body">
-                        <h5 th:text="${evento != null ? evento.nombre : 'Cargando evento...'}">Nombre del Evento</h5>
+                        <h5 class="fw-bold" th:text="${evento != null ? evento.nombre : 'Sin evento asignado'}"></h5>
                         <hr>
-                        <p><strong>📍 Lugar:</strong> <span th:text="${evento?.lugar}"></span></p>
-                        <p><strong>📅 Fecha:</strong> <span th:text="${evento?.fecha}"></span></p>
-                        <p><strong>⏰ Hora:</strong> <span th:text="${evento?.hora}"></span></p>
+                        <p class="mb-1"><strong>Lugar:</strong> <span th:text="${evento?.lugar}"></span></p>
+                        <p class="mb-1"><strong>Fecha:</strong> <span th:text="${evento?.fecha}"></span></p>
+                        <p class="mb-1"><strong>Hora:</strong> <span th:text="${evento?.hora}"></span> hs</p>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header bg-success text-white">2. Mis Entradas</div>
-                    <div class="card-body">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-header bg-success text-white">🎫 Mis Entradas</div>
+                    <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Tipo</th>
-                                        <th>Cant.</th>
+                                        <th>Detalle</th>
+                                        <th>Total</th>
                                         <th>Estado</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="compra : ${misCompras}">
                                         <td th:text="${compra.clasificacion}"></td>
-                                        <td th:text="${compra.cantidad}"></td>
+                                        <td th:text="${'$' + compra.monto_total}"></td>
                                         <td>
                                             <span th:class="${compra.estado_pago == 'PENDIENTE' ? 'badge bg-warning text-dark' : 'badge bg-success'}"
-                                                  th:text="${compra.estado_pago}">
-                                            </span>
+                                                  th:text="${compra.estado_pago}"></span>
                                         </td>
-                                    </tr>
-                                    <tr th:if="${#lists.isEmpty(misCompras)}">
-                                        <td colspan="3" class="text-center text-muted">No tienes entradas aún.</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -66,29 +62,39 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header bg-warning">3. Comprar Entradas</div>
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-header bg-warning text-dark">🛒 Comprar Entradas</div>
                     <div class="card-body">
                         <form th:action="@{/cliente/comprar}" method="post">
-                            <input type="hidden" name="idUsuario" value="1">
+                            <input type="hidden" name="idUsuario" th:value="${usuario.id_usuario}">
                             
-                            <div class="mb-3">
-                                <label class="form-label">Tipo de Entrada:</label>
-                                <select name="clasificacion" class="form-select">
-                                    <option value="Adulto">Adulto ($15.000)</option>
-                                    <option value="Menor">Menor ($8.000)</option>
-                                    <option value="Fiesta">Solo Fiesta ($5.000)</option>
-                                </select>
-                                <input type="hidden" name="precioUnitario" value="15000">
+                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento?.precio_adulto > 0}">
+                                <div>
+                                    <label class="d-block mb-0">Adultos</label>
+                                    <small class="price-tag" th:text="${'$' + evento.precio_adulto}"></small>
+                                </div>
+                                <input type="number" name="cantAdultos" class="form-control w-25" value="0" min="0">
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Cantidad:</label>
-                                <input type="number" name="cantidad" class="form-control" value="1" min="1">
+                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento?.precio_menor > 0}">
+                                <div>
+                                    <label class="d-block mb-0">Menores</label>
+                                    <small class="price-tag" th:text="${'$' + evento.precio_menor}"></small>
+                                </div>
+                                <input type="number" name="cantMenores" class="form-control w-25" value="0" min="0">
                             </div>
 
+                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento?.precio_fiesta > 0}">
+                                <div>
+                                    <label class="d-block mb-0">Solo Fiesta</label>
+                                    <small class="price-tag" th:text="${'$' + evento.precio_fiesta}"></small>
+                                </div>
+                                <input type="number" name="cantFiesta" class="form-control w-25" value="0" min="0">
+                            </div>
+
+                            <hr>
                             <div class="mb-3">
-                                <label class="form-label">Forma de Pago:</label>
+                                <label class="form-label">Forma de Pago</label>
                                 <select name="formaPago" class="form-select">
                                     <option value="TRANSFERENCIA">Transferencia</option>
                                     <option value="EFECTIVO">Efectivo</option>
@@ -96,14 +102,12 @@
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-dark w-100">Confirmar Compra</button>
+                            <button type="submit" class="btn btn-dark w-100 shadow-sm">Confirmar Pedido</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
