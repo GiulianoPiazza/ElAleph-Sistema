@@ -12,21 +12,16 @@
                 <div class="card shadow-lg border-0">
                     <div class="card-body p-5 text-center">
                         <h2 class="fw-bold mb-4">El Aleph</h2>
+                        <p class="small text-muted mb-4">Acceso privado a clientes</p>
                         <form th:action="@{/login}" method="post">
                             <div class="mb-3">
-                                <input type="email" name="email" class="form-control" placeholder="Tu Email" required>
+                                <input type="text" name="username" class="form-control" placeholder="Nombre de Usuario" required>
                             </div>
                             <div class="mb-3">
                                 <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Ingresar</button>
                         </form>
-                        
-                        <div class="mt-4 border-top pt-3">
-                            <p class="small text-muted">¿Sos un invitado y no tenés cuenta?</p>
-                            <a href="/registro" class="btn btn-outline-success btn-sm w-100">Registrate para tu fiesta</a>
-                        </div>
-
                         <div th:if="${error}" class="alert alert-danger mt-3 py-2 small" th:text="${error}"></div>
                         <div th:if="${param.logout}" class="alert alert-info mt-3 py-2 small">Sesión cerrada correctamente</div>
                     </div>

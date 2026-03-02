@@ -19,8 +19,8 @@ public class Evento {
     private String lugar;
     private Boolean activo = true;
 
-    // Nuevos campos para precios dinámicos
     private Double precio_adulto;
+    private Double precio_adolescente; // NUEVO
     private Double precio_menor;
     private Double precio_fiesta;
 }

@@ -4,18 +4,13 @@
     <meta charset="UTF-8">
     <title>El Aleph - Gestión de Entradas</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        .card-header { font-weight: bold; }
-        .price-tag { color: #198754; font-weight: bold; }
-    </style>
+    <style> .card-header { font-weight: bold; } .price-tag { color: #198754; font-weight: bold; } </style>
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-dark bg-dark mb-4 shadow">
-        <div class="container">
-            <span class="navbar-brand">✨ El Aleph - Bienvenido, <span th:text="${usuario.nombre_completo}"></span></span>
-            <a href="/logout" class="btn btn-outline-danger btn-sm">Cerrar Sesión</a>
-        </div>
-    </nav>
+    <nav class="navbar navbar-dark bg-dark mb-4 shadow"><div class="container">
+        <span class="navbar-brand">✨ El Aleph - Bienvenido, <span th:text="${usuario.nombre_completo}"></span></span>
+        <a href="/logout" class="btn btn-outline-danger btn-sm">Cerrar Sesión</a>
+    </div></nav>
 
     <div class="container">
         <div class="row g-4">
@@ -23,8 +18,7 @@
                 <div class="card shadow-sm h-100 border-0">
                     <div class="card-header bg-primary text-white">📍 Datos del Evento</div>
                     <div class="card-body">
-                        <h5 class="fw-bold" th:text="${evento != null ? evento.nombre : 'Sin evento asignado'}"></h5>
-                        <hr>
+                        <h5 class="fw-bold" th:text="${evento != null ? evento.nombre : 'Sin evento asignado'}"></h5><hr>
                         <p class="mb-1"><strong>Lugar:</strong> <span th:text="${evento?.lugar}"></span></p>
                         <p class="mb-1"><strong>Fecha:</strong> <span th:text="${evento?.fecha}"></span></p>
                         <p class="mb-1"><strong>Hora:</strong> <span th:text="${evento?.hora}"></span> hs</p>
@@ -34,75 +28,64 @@
 
             <div class="col-md-4">
                 <div class="card shadow-sm h-100 border-0">
-                    <div class="card-header bg-success text-white">🎫 Mis Entradas</div>
+                    <div class="card-header bg-success text-white">🎫 Estado de mis Entradas</div>
                     <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Detalle</th>
-                                        <th>Total</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="compra : ${misCompras}">
-                                        <td th:text="${compra.clasificacion}"></td>
-                                        <td th:text="${'$' + compra.monto_total}"></td>
-                                        <td>
-                                            <span th:class="${compra.estado_pago == 'PENDIENTE' ? 'badge bg-warning text-dark' : 'badge bg-success'}"
-                                                  th:text="${compra.estado_pago}"></span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light"><tr><th>Detalle</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead>
+                            <tbody>
+                                <tr th:each="compra : ${misCompras}">
+                                    <td class="small" th:text="${compra.clasificacion}"></td>
+                                    <td th:text="${'$' + compra.monto_total}"></td>
+                                    <td><span th:class="${compra.estado_pago == 'PENDIENTE' ? 'badge bg-warning text-dark' : 'badge bg-success'}" th:text="${compra.estado_pago}"></span></td>
+                                    <td>
+                                        <form th:if="${compra.estado_pago == 'PENDIENTE'}" th:action="@{/cliente/eliminar-compra}" method="post" onsubmit="return confirm('¿Eliminar?')">
+                                            <input type="hidden" name="idCompra" th:value="${compra.id_compra}"><button type="submit" class="btn btn-sm btn-outline-danger">🗑️</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4">
                 <div class="card shadow-sm h-100 border-0">
-                    <div class="card-header bg-warning text-dark">🛒 Comprar Entradas</div>
+                    <div class="card-header bg-warning text-dark">🛒 Entradas compradas</div>
                     <div class="card-body">
                         <form th:action="@{/cliente/comprar}" method="post">
                             <input type="hidden" name="idUsuario" th:value="${usuario.id_usuario}">
                             
-                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento?.precio_adulto > 0}">
-                                <div>
-                                    <label class="d-block mb-0">Adultos</label>
-                                    <small class="price-tag" th:text="${'$' + evento.precio_adulto}"></small>
-                                </div>
+                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento != null and evento.precio_adulto != null and evento.precio_adulto > 0}">
+                                <div><label class="d-block mb-0">Adultos</label><small class="price-tag" th:text="${'$' + evento.precio_adulto}"></small></div>
                                 <input type="number" name="cantAdultos" class="form-control w-25" value="0" min="0">
                             </div>
 
-                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento?.precio_menor > 0}">
-                                <div>
-                                    <label class="d-block mb-0">Menores</label>
-                                    <small class="price-tag" th:text="${'$' + evento.precio_menor}"></small>
-                                </div>
+                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento != null and evento.precio_adolescente != null and evento.precio_adolescente > 0}">
+                                <div><label class="d-block mb-0">Adolescentes</label><small class="price-tag" th:text="${'$' + evento.precio_adolescente}"></small></div>
+                                <input type="number" name="cantAdolescentes" class="form-control w-25" value="0" min="0">
+                            </div>
+
+                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento != null and evento.precio_menor != null and evento.precio_menor > 0}">
+                                <div><label class="d-block mb-0">Menores</label><small class="price-tag" th:text="${'$' + evento.precio_menor}"></small></div>
                                 <input type="number" name="cantMenores" class="form-control w-25" value="0" min="0">
                             </div>
 
-                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento?.precio_fiesta > 0}">
-                                <div>
-                                    <label class="d-block mb-0">Solo Fiesta</label>
-                                    <small class="price-tag" th:text="${'$' + evento.precio_fiesta}"></small>
-                                </div>
+                            <div class="mb-3 d-flex justify-content-between align-items-center" th:if="${evento != null and evento.precio_fiesta != null and evento.precio_fiesta > 0}">
+                                <div><label class="d-block mb-0">Solo Fiesta</label><small class="price-tag" th:text="${'$' + evento.precio_fiesta}"></small></div>
                                 <input type="number" name="cantFiesta" class="form-control w-25" value="0" min="0">
                             </div>
 
                             <hr>
                             <div class="mb-3">
-                                <label class="form-label">Forma de Pago</label>
+                                <label class="form-label">Como realizó el pago?</label>
                                 <select name="formaPago" class="form-select">
                                     <option value="TRANSFERENCIA">Transferencia</option>
                                     <option value="EFECTIVO">Efectivo</option>
                                     <option value="TARJETA">Tarjeta</option>
                                 </select>
                             </div>
-
-                            <button type="submit" class="btn btn-dark w-100 shadow-sm">Confirmar Pedido</button>
+                            <button type="submit" class="btn btn-dark w-100 shadow-sm">Confirmar</button>
                         </form>
                     </div>
                 </div>
