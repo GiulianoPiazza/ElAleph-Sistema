@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "compras")
-@Data // Esto genera automáticamente los Getters y Setters
+@Data 
 public class Compra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,6 @@ public class Compra {
 
     private String nombre_evento;
     
-    // ESTA ES LA COLUMNA QUE TE FALTA EN JAVA
     @Column(columnDefinition = "TEXT")
     private String lista_invitados;
 
@@ -26,6 +25,11 @@ public class Compra {
     private Integer cantidad;
     private Double monto_total;
     private String forma_pago;
+
+    // NUEVO CAMPO PARA LA FOTO
+    @Column(columnDefinition = "LONGTEXT")
+    private String comprobante;
+
     private LocalDateTime fecha_compra = LocalDateTime.now();
     private String estado_pago;
 }

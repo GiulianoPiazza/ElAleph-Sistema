@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 import java.util.Comparator;
 
@@ -68,13 +70,16 @@ public class ClienteController {
         return "dashboard";
     }
 
+    // AHORA RECIBE EL ARCHIVO DE FOTO
     @PostMapping("/cliente/comprar")
     public String procesarCompra(@RequestParam Long idUsuario, 
                                  @RequestParam(defaultValue = "0") Integer cantAdultos,
                                  @RequestParam(defaultValue = "0") Integer cantAdolescentes,
                                  @RequestParam(defaultValue = "0") Integer cantMenores, 
                                  @RequestParam(defaultValue = "0") Integer cantFiesta,
-                                 @RequestParam String formaPago, HttpSession session) {
+                                 @RequestParam String formaPago, 
+                                 @RequestParam(required = false) MultipartFile archivoComprobante,
+                                 HttpSession session) {
         Usuario user = (Usuario) session.getAttribute("usuarioLogueado");
         if (user == null) return "redirect:/";
         Evento evento = eventoRepository.findById(user.getId_evento()).orElse(null);
@@ -94,6 +99,17 @@ public class ClienteController {
         nuevaCompra.setForma_pago(formaPago);
         nuevaCompra.setMonto_total(total);
         nuevaCompra.setEstado_pago("PENDIENTE");
+
+        // SI HAY FOTO, LA GUARDAMOS
+        if (archivoComprobante != null && !archivoComprobante.isEmpty()) {
+            try {
+                String base64Image = Base64.getEncoder().encodeToString(archivoComprobante.getBytes());
+                nuevaCompra.setComprobante("data:" + archivoComprobante.getContentType() + ";base64," + base64Image);
+            } catch (Exception e) {
+                System.out.println("Error guardando comprobante: " + e.getMessage());
+            }
+        }
+
         compraRepository.save(nuevaCompra);
         return "redirect:/cliente/dashboard";
     }
@@ -155,15 +171,13 @@ public class ClienteController {
         Usuario user = (Usuario) session.getAttribute("usuarioLogueado");
         if (user == null || !"ADMIN".equals(user.getRol())) return "redirect:/";
 
-        // Si es null, ponemos 0 (Mes actual). Si es -1, significa "Histórico Completo"
         int mesBusqueda = (mes == null) ? 0 : mes;
         int mesReal = (mesBusqueda == 0) ? LocalDate.now().getMonthValue() : mesBusqueda;
 
         List<Compra> filtradas = compraRepository.findAll().stream()
-                // Si mesBusqueda es -1, ignoramos el mes y traemos TODO. Sino, filtramos por el mes elegido.
                 .filter(c -> mesBusqueda == -1 || (c.getFecha_compra() != null && c.getFecha_compra().getMonthValue() == mesReal))
                 .filter(c -> idEvento == null || idEvento == 0 || (c.getUsuario() != null && c.getUsuario().getId_evento().equals(idEvento)))
-                .filter(c -> "APROBADO".equals(c.getEstado_pago())) // SOLO LOS APROBADOS
+                .filter(c -> "APROBADO".equals(c.getEstado_pago())) 
                 .toList();
 
         int tA = 0, tAD = 0, tM = 0, tF = 0;

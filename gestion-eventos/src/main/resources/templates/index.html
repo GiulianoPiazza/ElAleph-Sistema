@@ -2,32 +2,105 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login - El Aleph</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a El Aleph</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos Globales y Tipografía */
+        body, html { height: 100%; margin: 0; font-family: 'Montserrat', sans-serif; overflow: hidden; }
+        h1, .brand-title { font-family: 'Playfair Display', serif; color: #1a1a1a; font-weight: 700; }
+        
+        /* Carrusel de Fondo Completo */
+        .fullscreen-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; }
+        .carousel-item img { width: 100vw; height: 100vh; object-fit: cover; }
+        
+        /* Capa oscura sobre el carrusel para dar contraste */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: -1; }
+
+        /* Contenedor Centrado del Login */
+        .login-wrapper { height: 100%; display: flex; align-items: center; justify-content: center; z-index: 1; position: relative; padding: 20px; }
+        
+        .login-box { 
+            background-color: rgba(255, 255, 255, 0.95); /* Fondo blanco casi opaco */
+            padding: 50px 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            border: 3px solid #D4AF37; /* Borde Dorado */
+            width: 100%; max-width: 450px; text-align: center; 
+        }
+
+        /* Estilos de Formulario Altamente Legibles */
+        .form-label { color: #555; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: block; text-align: left;}
+        .form-control { 
+            border: 2px solid #ccc; border-radius: 8px; padding: 12px 15px; 
+            font-size: 1rem; color: #1a1a1a; font-weight: 600; background-color: #fff;
+        }
+        .form-control:focus { border-color: #D4AF37; box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25); color: #000; }
+        
+        /* Botón Dorado Imperial */
+        .btn-gold { 
+            background: linear-gradient(135deg, #D4AF37 0%, #b5952f 100%); 
+            color: #1a1a1a; font-weight: 700; border: none; padding: 12px; 
+            border-radius: 30px; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; 
+            font-size: 1rem;
+        }
+        .btn-gold:hover { background: linear-gradient(135deg, #b5952f 0%, #D4AF37 100%); color: #fff; transform: scale(1.02); }
+        
+    </style>
 </head>
-<body class="bg-dark d-flex align-items-center" style="height: 100vh;">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="card shadow-lg border-0">
-                    <div class="card-body p-5 text-center">
-                        <h2 class="fw-bold mb-4">El Aleph</h2>
-                        <p class="small text-muted mb-4">Acceso privado a clientes</p>
-                        <form th:action="@{/login}" method="post">
-                            <div class="mb-3">
-                                <input type="text" name="username" class="form-control" placeholder="Nombre de Usuario" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Ingresar</button>
-                        </form>
-                        <div th:if="${error}" class="alert alert-danger mt-3 py-2 small" th:text="${error}"></div>
-                        <div th:if="${param.logout}" class="alert alert-info mt-3 py-2 small">Sesión cerrada correctamente</div>
-                    </div>
+<body>
+
+    <div class="fullscreen-bg">
+        <div id="bgCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000" alt="Salón Elegante">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2000" alt="Fiesta Luces">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1505944357632-ca027deb1139?q=80&w=2000" alt="Mesa servida">
                 </div>
             </div>
         </div>
     </div>
+    
+    <div class="overlay"></div>
+
+    <div class="login-wrapper">
+        <div class="login-box shadow-lg">
+            
+            <div class="mb-5">
+                <h1 class="brand-title mb-0" style="font-size: 3rem;">El Aleph</h1>
+                <p class="text-muted fw-bold" style="letter-spacing: 4px; font-size: 0.75rem; text-transform: uppercase;">Camino San Carlos - CBA</p>
+                <hr style="border-color: #D4AF37; width: 60px; margin: 20px auto; opacity: 1; border-width: 3px;">
+                <p class="text-dark fw-bold mt-3" style="font-size: 1.1rem;">Panel de Gestión de Invitados</p>
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="mb-4">
+                    <label class="form-label">Usuario del Evento</label>
+                    <input type="text" name="username" class="form-control form-control-lg" placeholder="Ej: bodajuan y ana" required>
+                </div>
+                <div class="mb-5">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" name="password" class="form-control form-control-lg" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-gold w-100 shadow">Ingresar al Sistema</button>
+            </form>
+
+            <div th:if="${error}" class="alert alert-danger mt-4 py-2 fw-bold text-center border-0" style="background-color: #f8d7da; color: #842029;" th:text="${error}"></div>
+            <div th:if="${param.logout}" class="alert alert-success mt-4 py-2 fw-bold text-center border-0" style="background-color: #d1e7dd; color: #0f5132;">Sesión cerrada con éxito.</div>
+            
+            <div class="mt-5 pt-3">
+                <p class="text-muted fw-bold" style="font-size: 0.7rem;">&copy; 2026 Salón El Aleph.<br>Sistema de Accesos v1.0</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
