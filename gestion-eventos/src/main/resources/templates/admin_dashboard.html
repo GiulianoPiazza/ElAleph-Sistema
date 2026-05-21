@@ -2,92 +2,93 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Panel Global - El Aleph</title>
+    <title>Control Maestro - Eventia</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #f0f0f0; color: #1a1a1a; }
-        .bg-aleph { background-color: #1a1a1a; }
-        .text-gold { color: #D4AF37; }
-        .brand-title { font-family: 'Playfair Display', serif; }
-        .card { border: none; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .table-dark-aleph { background-color: #1a1a1a; color: #fff; }
-        .table-hover tbody tr:hover { background-color: #fffdf5; } /* Resaltado dorado suave */
+        body { font-family: 'Montserrat', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .navbar-admin { background-color: #0f172a; border-bottom: 3px solid #f59e0b; }
+        .card-panel { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .th-slate { background-color: #0f172a !important; color: #fff !important; font-weight: 600; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-aleph shadow mb-4">
+
+    <nav class="navbar navbar-dark navbar-admin shadow mb-4">
         <div class="container-fluid px-4">
-            <span class="navbar-brand brand-title text-gold fs-3">El Aleph <span class="fs-6 font-monospace text-light ms-3">| CONTROL MAESTRO</span></span>
+            <span class="navbar-brand fw-bold">EVENTIA <span class="fs-6 font-monospace text-warning ms-3">| CONSOLA GLOBAL DE ADMINISTRACIÓN</span></span>
             <div>
-                <a href="/admin/eventos" class="btn btn-sm mx-1 rounded-pill fw-bold text-white bg-secondary">Eventos</a>
-                <a href="/admin/usuarios" class="btn btn-sm mx-1 rounded-pill fw-bold text-white bg-secondary">Clientes</a>
-                <a href="/admin/rendicion" class="btn btn-sm mx-1 rounded-pill fw-bold" style="background-color: #D4AF37; color: #1a1a1a;">📊 Rendición</a>
-                <a href="/logout" class="btn btn-danger btn-sm mx-1 rounded-pill fw-bold ms-3">Salir</a>
+                <a href="/admin/eventos" class="btn btn-outline-light btn-sm mx-1 rounded-pill px-3">Eventos</a>
+                <a href="/admin/usuarios" class="btn btn-outline-light btn-sm mx-1 rounded-pill px-3">Clientes</a>
+                <a href="/admin/rendicion" class="btn btn-warning btn-sm mx-1 rounded-pill px-3 fw-bold">📈 Rendición</a>
+                <a href="/logout" class="btn btn-danger btn-sm mx-1 rounded-pill fw-bold ms-3">Cerrar Sesión</a>
             </div>
         </div>
     </nav>
 
     <div class="container-fluid px-4">
-        <div class="card p-3 mb-4 shadow-sm bg-white">
+        <div class="card card-panel p-3 mb-4 bg-white">
             <form th:action="@{/admin/dashboard}" method="get" class="row g-3 align-items-center">
-                <div class="col-auto"><label class="fw-bold text-dark">Filtrar Pagos de Fiesta:</label></div>
+                <div class="col-auto"><label class="fw-bold text-muted">Seleccionar Evento Activo:</label></div>
                 <div class="col-md-4">
-                    <select name="idEvento" class="form-select bg-light border-2 fw-bold text-black">
-                        <option value="0">--- Todas las fiestas ---</option>
+                    <select name="idEvento" class="form-select border-2 fw-semibold">
+                        <option value="0">--- Mostrar todas las cuentas/eventos ---</option>
                         <option th:each="e : ${eventos}" th:value="${e.id_evento}" th:text="${e.nombre}" th:selected="${e.id_evento == idEventoSeleccionado}"></option>
                     </select>
                 </div>
-                <div class="col-auto"><button type="submit" class="btn btn-dark fw-bold px-4 rounded-pill">Aplicar</button></div>
+                <div class="col-auto"><button type="submit" class="btn btn-dark px-4 rounded-pill fw-bold">Filtrar</button></div>
             </form>
         </div>
         
-        <div class="card shadow border-0 text-center py-4 mb-4" style="background: linear-gradient(135deg, #1a1a1a 0%, #333 100%); color: #fff;">
-            <h6 class="fw-bold mb-2 text-gold" style="letter-spacing: 2px; font-size: 0.8rem;">TOTAL RECAUDADO (APROBADO EN PANTALLA)</h6>
-            <h1 class="mb-0 brand-title fw-bold text-white" style="font-size: 3.5rem;" th:text="${'$' + total}"></h1>
+        <div class="card card-panel text-center py-3 mb-4 bg-dark text-white">
+            <h6 class="text-warning fw-semibold mb-1" style="letter-spacing: 1px;">RECAUDACIÓN TOTAL COMPROBADA Y APROBADA</h6>
+            <h2 class="mb-0 fw-bold" style="font-size: 2.5rem;" th:text="${'$' + total}"></h2>
         </div>
         
-        <div class="card shadow-sm border-0 bg-white">
+        <div class="card card-panel shadow-sm bg-white">
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0 table-striped">
-                        <thead class="table-dark-aleph">
+                        <thead class="th-slate">
                             <tr>
-                                <th class="ps-4 py-3">Fecha Carga</th>
-                                <th>Dueño/Cliente</th>
-                                <th>Nombre del Evento</th>
-                                <th>Detalle (A/AD/M/F)</th>
+                                <th class="ps-4 py-3">Fecha de Pago</th>
+                                <th>Cuenta Cliente</th>
+                                <th>Evento Asociado</th>
+                                <th>Asistencia Declarada</th>
                                 <th>Monto Total</th>
-                                <th>Pago / Comprobante</th> 
+                                <th>Medio / Comprobante</th> 
                                 <th>Estado</th>
-                                <th class="text-end pe-4">Acciones Críticas</th>
+                                <th class="text-end pe-4">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="c : ${todasLasCompras}">
-                                <td class="ps-4 small text-dark fw-bold" th:text="${#temporals.format(c.fecha_compra, 'dd/MM/yyyy HH:mm')}"></td>
-                                <td class="fw-bold text-black" th:text="${c.usuario?.nombre_completo}"></td>
-                                <td class="text-primary small fw-bold" th:text="${c.nombre_evento}"></td>
-                                <td style="font-family: monospace;" class="fw-bold text-dark" th:text="${c.clasificacion}"></td>
-                                <td class="fw-bold fs-5 text-success" th:text="${'$' + c.monto_total}"></td>
+                                <td class="ps-4 small text-muted fw-bold" th:text="${#temporals.format(c.fecha_compra, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td class="fw-bold" th:text="${c.usuario?.nombre_completo}"></td>
+                                <td class="text-primary small fw-semibold" th:text="${c.nombre_evento}"></td>
+                                <!-- PALABRAS COMPLETAS EN LA CLASIFICACIÓN -->
+                                <td class="small font-monospace fw-bold text-dark" 
+                                    th:text="${#strings.replace(#strings.replace(#strings.replace(#strings.replace(c.clasificacion, 'A:', 'Adultos: '), 'AD:', 'Adolescentes: '), 'M:', 'Menores: '), 'F:', 'Fiesta: ')}">
+                                </td>
+                                <td class="fw-bold text-success fs-5" th:text="${'$' + c.monto_total}"></td>
                                 
                                 <td>
-                                    <span class="badge bg-dark mb-1 d-block w-100 fw-bold" th:text="${c.forma_pago}"></span>
-                                    
-                                    <button th:if="${c.comprobante != null}" type="button" class="btn btn-sm w-100 fw-bold rounded-pill" style="background-color: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1;" data-bs-toggle="modal" th:data-bs-target="'#fotoModal' + ${c.id_compra}">
-                                        📷 Ver Captura
+                                    <span class="badge bg-slate text-dark border fw-bold mb-1 d-block w-100" style="background-color: #f1f5f9;" th:text="${c.forma_pago}"></span>
+                                    <button th:if="${c.comprobante != null}" type="button" class="btn btn-sm btn-dark w-100 rounded-pill fw-bold" data-bs-toggle="modal" th:data-bs-target="'#fotoModal' + ${c.id_compra}">
+                                        📷 Ver Comprobante
                                     </button>
 
+                                    <!-- Modal -->
                                     <div th:if="${c.comprobante != null}" class="modal fade" th:id="'fotoModal' + ${c.id_compra}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-lg">
                                             <div class="modal-content border-0 shadow-lg">
-                                                <div class="modal-header bg-aleph text-gold border-0">
-                                                    <h5 class="modal-title brand-title fs-4">Comprobante de <span th:text="${c.usuario?.nombre_completo}"></span></h5>
+                                                <div class="modal-header bg-dark text-white border-0">
+                                                    <h5 class="modal-title fw-bold">Validación de Transferencia - <span th:text="${c.usuario?.nombre_completo}"></span></h5>
                                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body text-center bg-light p-3">
-                                                    <img th:src="${c.comprobante}" class="img-fluid rounded border shadow" alt="Comprobante de pago" style="max-height: 75vh;">
+                                                    <img th:src="${c.comprobante}" class="img-fluid rounded border shadow" style="max-height: 75vh;">
                                                 </div>
                                             </div>
                                         </div>
@@ -95,23 +96,22 @@
                                 </td>
                                 
                                 <td>
-                                    <span th:if="${c.estado_pago == 'PENDIENTE'}" class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold" style="font-size: 0.75rem;">PENDIENTE</span>
-                                    <span th:if="${c.estado_pago == 'APROBADO'}" class="badge bg-success px-3 py-2 rounded-pill fw-bold" style="font-size: 0.75rem;">APROBADO</span>
+                                    <span th:class="${c.estado_pago == 'PENDIENTE' ? 'badge bg-warning text-dark px-3 py-2 rounded-pill' : 'badge bg-success px-3 py-2 rounded-pill'}" th:text="${c.estado_pago}"></span>
                                 </td>
                                 
                                 <td class="text-end pe-4">
                                     <div class="d-flex justify-content-end gap-1">
                                         <form th:if="${c.estado_pago == 'PENDIENTE'}" th:action="@{/admin/aprobar-pago}" method="post">
                                             <input type="hidden" name="idCompra" th:value="${c.id_compra}"><input type="hidden" name="filtroEvento" th:value="${idEventoSeleccionado != null ? idEventoSeleccionado : 0}">
-                                            <button class="btn btn-sm btn-success fw-bold rounded-pill px-3">✓ Aprobar</button>
+                                            <button class="btn btn-sm btn-success fw-bold rounded-pill px-3">Validar</button>
                                         </form>
                                         <form th:if="${c.estado_pago == 'APROBADO'}" th:action="@{/admin/revertir-pago}" method="post">
                                             <input type="hidden" name="idCompra" th:value="${c.id_compra}"><input type="hidden" name="filtroEvento" th:value="${idEventoSeleccionado != null ? idEventoSeleccionado : 0}">
-                                            <button class="btn btn-sm btn-outline-secondary fw-bold rounded-pill px-3">↺ Revertir</button>
+                                            <button class="btn btn-sm btn-outline-secondary fw-bold rounded-pill px-3">Revertir</button>
                                         </form>
-                                        <form th:action="@{/admin/eliminar-pago}" method="post" onsubmit="return confirm('¿BORRAR DEFINITIVAMENTE este registro de pago? No se puede deshacer.')">
+                                        <form th:action="@{/admin/eliminar-pago}" method="post" onsubmit="return confirm('¿Eliminar registro de forma definitiva?')">
                                             <input type="hidden" name="idCompra" th:value="${c.id_compra}"><input type="hidden" name="filtroEvento" th:value="${idEventoSeleccionado != null ? idEventoSeleccionado : 0}">
-                                            <button class="btn btn-sm btn-danger rounded-pill px-2">🗑️</button>
+                                            <button class="btn btn-sm btn-outline-danger border-0">🗑️</button>
                                         </form>
                                     </div>
                                 </td>

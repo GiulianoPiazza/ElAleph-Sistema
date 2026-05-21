@@ -3,32 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Invitados - El Aleph</title>
+    <title>Panel de Invitados - Eventia</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #f0f0f0; color: #1a1a1a; }
-        .bg-aleph { background-color: #1a1a1a; }
-        .text-gold { color: #D4AF37; }
-        .brand-title { font-family: 'Playfair Display', serif; }
-        .btn-gold { 
-            background: linear-gradient(135deg, #D4AF37 0%, #b5952f 100%); 
-            color: #1a1a1a; font-weight: 700; border: none; letter-spacing: 1px;
-        }
-        .btn-gold:hover { background: linear-gradient(135deg, #b5952f 0%, #D4AF37 100%); color: #fff; }
-        .card { border: none; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .card-header { font-weight: 700; letter-spacing: 1px; padding: 18px 25px; font-size: 0.9rem; text-transform: uppercase;}
-        .price-tag { color: #b5952f; font-weight: 700; font-size: 1.2rem; }
-        .form-control-input { background-color: #fff; border: 2px solid #ddd; font-weight: 700; color: #000; text-align: center;}
+        body { font-family: 'Montserrat', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .navbar-custom { background-color: #0f172a; border-bottom: 3px solid #f59e0b; }
+        .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.01); background: #fff; }
+        .card-header-custom { background-color: #f1f5f9; color: #1e293b; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding: 15px 20px; }
+        .price-text { color: #d97706; font-weight: 700; font-size: 1.1rem; }
+        .input-qty { font-weight: 700; text-align: center; border: 2px solid #cbd5e1; border-radius: 8px; }
+        .btn-action { background-color: #0f172a; color: #fff; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
+        .btn-action:hover { background-color: #f59e0b; color: #0f172a; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-aleph shadow mb-4">
+
+    <nav class="navbar navbar-dark navbar-custom shadow-sm mb-4">
         <div class="container">
-            <span class="navbar-brand brand-title text-gold fs-3">El Aleph <span class="fs-6 font-monospace text-light ms-3">| Panel de Invitados</span></span>
+            <span class="navbar-brand fw-bold tracking-tight">EVENTIA <span class="fs-6 text-muted fw-normal ms-2">| Portal del Invitado</span></span>
             <div class="d-flex align-items-center">
-                <span class="text-white fw-bold me-3 small">Hola, <span th:text="${usuario.nombre_completo}"></span></span>
-                <a href="/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">Salir</a>
+                <span class="text-white small fw-semibold me-3 th-text">Cuenta: <span class="text-warning" th:text="${usuario.nombre_completo}"></span></span>
+                <a href="/logout" class="btn btn-outline-light btn-sm rounded-pill px-3 fw-bold">Salir</a>
             </div>
         </div>
     </nav>
@@ -36,98 +32,90 @@
     <div class="container pb-5">
         <div class="row g-4">
             
+            <!-- DATOS DEL EVENTO -->
             <div class="col-lg-4">
-                <div class="card h-100">
-                    <div class="card-header bg-aleph text-gold border-0">📍 Información de tu Fiesta</div>
-                    <div class="card-body bg-white p-4">
-                        <h3 class="brand-title fw-bold text-dark mb-4" th:text="${evento != null ? evento.nombre : 'Sin evento'}"></h3>
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="fs-2 me-3">📆</span>
-                            <div><small class="text-muted d-block fw-bold uppercase" style="font-size: 0.7rem;">FECHA</small><strong class="fs-5 text-black" th:text="${evento?.fecha}"></strong></div>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="fs-2 me-3">⌚</span>
-                            <div><small class="text-muted d-block fw-bold uppercase" style="font-size: 0.7rem;">HORARIO DE INICIO</small><strong class="fs-5 text-black" th:text="${evento?.hora} + ' hs'"></strong></div>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <span class="fs-2 me-3">🗺️</span>
-                            <div><small class="text-muted d-block fw-bold uppercase" style="font-size: 0.7rem;">UBICACIÓN</small><strong class="fs-5 text-black" th:text="${evento?.lugar}"></strong></div>
-                        </div>
+                <div class="card card-custom h-100">
+                    <div class="card-header-custom" style="background-color: #0f172a; color: #fff;">📍 Detalles de la Invitación</div>
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-4 text-dark" th:text="${evento != null ? evento.nombre : 'Evento no asignado'}"></h4>
+                        <div class="mb-3"><small class="text-muted d-block fw-bold" style="font-size: 0.65rem;">FECHA AGENDADA</small><strong class="fs-5" th:text="${evento?.fecha}"></strong></div>
+                        <div class="mb-3"><small class="text-muted d-block fw-bold" style="font-size: 0.65rem;">HORARIO DE APERTURA</small><strong class="fs-5" th:text="${evento?.hora} + ' hs'"></strong></div>
+                        <div><small class="text-muted d-block fw-bold" style="font-size: 0.65rem;">SALÓN / UBICACIÓN</small><strong class="fs-5" th:text="${evento?.lugar}"></strong></div>
                     </div>
                 </div>
             </div>
 
+            <!-- FORMULARIO CARGAR ENTRADAS -->
             <div class="col-lg-4">
-                <div class="card h-100">
-                    <div class="card-header bg-white text-dark border-bottom fw-bold" style="background-color: #f8f9fa !important;">🎫 CARGAR NUEVOS INVITADOS</div>
-                    <div class="card-body bg-white p-4">
+                <div class="card card-custom h-100">
+                    <div class="card-header-custom">🎟️ Seleccionar Cantidad de Accesos</div>
+                    <div class="card-body p-4">
                         <form th:action="@{/cliente/comprar}" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="idUsuario" th:value="${usuario.id_usuario}">
                             
-                            <div class="mb-3 d-flex justify-content-between align-items-center bg-light p-2 rounded border" th:if="${evento != null and evento.precio_adulto != null and evento.precio_adulto > 0}">
-                                <div><label class="d-block mb-0 fw-bold text-dark">Adultos</label><small class="price-tag" th:text="${'$' + evento.precio_adulto}"></small></div>
-                                <input type="number" name="cantAdultos" class="form-control form-control-lg form-control-input" style="width: 80px;" value="0" min="0">
+                            <div class="mb-3 d-flex justify-content-between align-items-center bg-light p-2 rounded" th:if="${evento != null and evento.precio_adulto != null and evento.precio_adulto > 0}">
+                                <div><label class="mb-0 fw-semibold">Entrada Adulto</label><br><small class="price-text" th:text="${'$' + evento.precio_adulto}"></small></div>
+                                <input type="number" name="cantAdultos" class="form-control input-qty" style="width: 75px;" value="0" min="0">
                             </div>
 
-                            <div class="mb-3 d-flex justify-content-between align-items-center bg-light p-2 rounded border" th:if="${evento != null and evento.precio_adolescente != null and evento.precio_adolescente > 0}">
-                                <div><label class="d-block mb-0 fw-bold text-dark">Adolescentes</label><small class="price-tag" th:text="${'$' + evento.precio_adolescente}"></small></div>
-                                <input type="number" name="cantAdolescentes" class="form-control form-control-lg form-control-input" style="width: 80px;" value="0" min="0">
+                            <div class="mb-3 d-flex justify-content-between align-items-center bg-light p-2 rounded" th:if="${evento != null and evento.precio_adolescente != null and evento.precio_adolescente > 0}">
+                                <div><label class="mb-0 fw-semibold">Entrada Adolescente</label><br><small class="price-text" th:text="${'$' + evento.precio_adolescente}"></small></div>
+                                <input type="number" name="cantAdolescentes" class="form-control input-qty" style="width: 75px;" value="0" min="0">
                             </div>
 
-                            <div class="mb-3 d-flex justify-content-between align-items-center bg-light p-2 rounded border" th:if="${evento != null and evento.precio_menor != null and evento.precio_menor > 0}">
-                                <div><label class="d-block mb-0 fw-bold text-dark">Menores (3 a 10 años)</label><small class="price-tag" th:text="${'$' + evento.precio_menor}"></small></div>
-                                <input type="number" name="cantMenores" class="form-control form-control-lg form-control-input" style="width: 80px;" value="0" min="0">
+                            <div class="mb-3 d-flex justify-content-between align-items-center bg-light p-2 rounded" th:if="${evento != null and evento.precio_menor != null and evento.precio_menor > 0}">
+                                <div><label class="mb-0 fw-semibold">Entrada Menor</label><br><small class="price-text" th:text="${'$' + evento.precio_menor}"></small></div>
+                                <input type="number" name="cantMenores" class="form-control input-qty" style="width: 75px;" value="0" min="0">
                             </div>
 
-                            <div class="mb-3 d-flex justify-content-between align-items-center bg-light p-2 rounded border" th:if="${evento != null and evento.precio_fiesta != null and evento.precio_fiesta > 0}">
-                                <div><label class="d-block mb-0 fw-bold text-dark">Solo Fiesta</label><small class="text-muted d-block" style="font-size: 11px;">Ingreso post-cena</small><small class="price-tag" th:text="${'$' + evento.precio_fiesta}"></small></div>
-                                <input type="number" name="cantFiesta" class="form-control form-control-lg form-control-input" style="width: 80px;" value="0" min="0">
+                            <div class="mb-3 d-flex justify-content-between align-items-center bg-light p-2 rounded" th:if="${evento != null and evento.precio_fiesta != null and evento.precio_fiesta > 0}">
+                                <div><label class="mb-0 fw-semibold">Pase Solo Fiesta</label><br><small class="price-text" th:text="${'$' + evento.precio_fiesta}"></small></div>
+                                <input type="number" name="cantFiesta" class="form-control input-qty" style="width: 75px;" value="0" min="0">
                             </div>
 
-                            <div class="mt-4 mb-3 p-3 rounded" style="background-color: #fafafa; border: 2px solid #eee;">
-                                <label class="form-label fw-bold text-dark small uppercase mb-2" style="letter-spacing: 1px;">Seleccionar Medio de Pago</label>
-                                <select name="formaPago" id="formaPago" class="form-select form-select-lg border-2 fw-bold text-black" onchange="mostrarComprobante()">
-                                    <option value="EFECTIVO">💵 Efectivo en Salón</option>
-                                    <option value="TRANSFERENCIA">📱 Transferencia Bancaria</option>
-                                    <option value="TARJETA">💳 Tarjeta (Coordinar)</option>
+                            <div class="my-4 p-3 rounded bg-light border">
+                                <label class="form-label fw-bold small text-secondary mb-2">Medio de Pago Utilizado</label>
+                                <select name="formaPago" id="formaPago" class="form-select border-2 fw-semibold" onchange="mostrarComprobante()">
+                                    <option value="EFECTIVO">Efectivo en administración</option>
+                                    <option value="TRANSFERENCIA">Transferencia Bancaria directa</option>
+                                    <option value="TARJETA">Tarjeta de Débito / Crédito</option>
                                 </select>
                             </div>
 
-                            <div class="mb-4 p-3 rounded shadow-sm border-3 border-warning" id="cajaComprobante" style="display: none; background-color: #fffbeb;">
-                                <label class="form-label small fw-bold text-warning-track mb-1">📸 Subir Captura del Comprobante</label>
-                                <p class="text-dark mb-2 fw-bold" style="font-size: 11px;">Es obligatorio adjuntar la foto para validar la transferencia.</p>
-                                <input type="file" name="archivoComprobante" id="archivoComprobante" class="form-control form-control-sm border-warning" accept="image/*">
+                            <div class="mb-4 p-3 rounded border border-warning" id="cajaComprobante" style="display: none; background-color: #fffbeb;">
+                                <label class="form-label small fw-bold text-dark mb-1">📸 Adjuntar Comprobante Digital</label>
+                                <p class="text-muted mb-2" style="font-size: 11px;">Suba la captura de pantalla o PDF de la transferencia para validar el pago.</p>
+                                <input type="file" name="archivoComprobante" id="archivoComprobante" class="form-control form-control-sm" accept="image/*">
                             </div>
 
-                            <button type="submit" class="btn btn-gold w-100 py-3 rounded-pill shadow fw-bold text-uppercase fs-6" style="letter-spacing: 2px;">Confirmar y Enviar</button>
+                            <button type="submit" class="btn btn-action w-100 py-2.5 shadow-sm text-uppercase fw-bold">Registrar Declaración</button>
                         </form>
                     </div>
                 </div>
             </div>
 
+            <!-- ESTADO DE PAGOS (Nombres Completos) -->
             <div class="col-lg-4">
-                <div class="card h-100">
-                    <div class="card-header text-white" style="background-color: #6c757d;">📑 RESUMEN DE CARGAS Y PAGOS</div>
-                    <div class="card-body p-0 bg-white">
-                        <div th:if="${misCompras.empty}" class="p-5 text-center text-muted">
-                            <span class="fs-1 d-block mb-3">🏷️</span>
-                            <strong class="text-dark">Aún no registraste invitados.</strong><br>Usá el panel central para empezar.
-                        </div>
+                <div class="card card-custom h-100">
+                    <div class="card-header-custom" style="background-color: #64748b; color:#fff;">📋 Historial de Liquidaciones</div>
+                    <div class="card-body p-0">
+                        <div th:if="${misCompras.empty}" class="p-4 text-center text-muted">No se registran solicitudes de accesos.</div>
                         <div class="table-responsive" th:unless="${misCompras.empty}">
-                            <table class="table table-striped table-hover mb-0 align-middle">
-                                <thead class="table-light text-dark fw-bold"><tr><th class="ps-3">Detalle</th><th>Monto</th><th>Estado</th><th></th></tr></thead>
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light"><tr><th class="ps-3">Detalle Completo</th><th>Total</th><th>Estado</th><th></th></tr></thead>
                                 <tbody>
                                     <tr th:each="compra : ${misCompras}">
-                                        <td class="ps-3 text-dark small fw-bold" style="font-family: monospace;" th:text="${compra.clasificacion}"></td>
-                                        <td class="fw-bold text-black fs-6" th:text="${'$' + compra.monto_total}"></td>
-                                        <td>
-                                            <span th:if="${compra.estado_pago == 'PENDIENTE'}" class="badge bg-warning text-dark rounded-pill fw-bold" style="font-size: 0.7rem;">En Revisión</span>
-                                            <span th:if="${compra.estado_pago == 'APROBADO'}" class="badge bg-success rounded-pill fw-bold" style="font-size: 0.7rem;">Aprobado</span>
+                                        <!-- AQUÍ TRADUCIMOS LAS INICIALES A PALABRAS COMPLETAS -->
+                                        <td class="ps-3 small font-monospace fw-semibold text-dark" 
+                                            th:text="${#strings.replace(#strings.replace(#strings.replace(#strings.replace(compra.clasificacion, 'A:', 'Adultos: '), 'AD:', 'Adolescentes: '), 'M:', 'Menores: '), 'F:', 'Fiesta: ')}">
                                         </td>
-                                        <td class="text-end pe-3">
-                                            <form th:if="${compra.estado_pago == 'PENDIENTE'}" th:action="@{/cliente/eliminar-compra}" method="post" onsubmit="return confirm('¿Cancelar esta carga de invitados?')">
-                                                <input type="hidden" name="idCompra" th:value="${compra.id_compra}">
-                                                <button type="submit" class="btn btn-sm btn-link text-danger p-0 fw-bold text-decoration-none" style="font-size: 1.2rem;">&times;</button>
+                                        <td class="fw-bold" th:text="${'$' + compra.monto_total}"></td>
+                                        <td>
+                                            <span th:class="${compra.estado_pago == 'PENDIENTE' ? 'badge bg-warning text-dark' : 'badge bg-success'}" th:text="${compra.estado_pago}"></span>
+                                        </td>
+                                        <td class="pe-3">
+                                            <form th:if="${compra.estado_pago == 'PENDIENTE'}" th:action="@{/cliente/eliminar-compra}" method="post">
+                                                <input type="hidden" name="idCompra" th:value="${compra.id_compra}"><button type="submit" class="btn btn-sm btn-outline-danger border-0">✕</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -146,17 +134,9 @@
             var formaPago = document.getElementById("formaPago").value;
             var cajaFoto = document.getElementById("cajaComprobante");
             var inputFoto = document.getElementById("archivoComprobante");
-            
-            if (formaPago === "TRANSFERENCIA") {
-                cajaFoto.style.display = "block";
-                inputFoto.required = true;
-            } else {
-                cajaFoto.style.display = "none";
-                inputFoto.required = false;
-                inputFoto.value = ""; 
-            }
+            if (formaPago === "TRANSFERENCIA") { cajaFoto.style.display = "block"; inputFoto.required = true; } 
+            else { cajaFoto.style.display = "none"; inputFoto.required = false; inputFoto.value = ""; }
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

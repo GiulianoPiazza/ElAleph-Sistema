@@ -2,42 +2,40 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Rendición - El Aleph</title>
+    <title>Reportes Estadísticos - Eventia</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style> 
-        body { font-family: 'Montserrat', sans-serif; background-color: #f0f0f0; color: #1a1a1a; }
-        .bg-aleph { background-color: #1a1a1a; }
-        .text-gold { color: #D4AF37; }
-        .brand-title { font-family: 'Playfair Display', serif; }
-        .card { border: none; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .stat-card { border-left: 6px solid #D4AF37 !important; background-color: #fff; transition: transform 0.2s; }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        body { font-family: 'Montserrat', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .navbar-admin { background-color: #0f172a; border-bottom: 3px solid #f59e0b; }
+        .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .indicator-card { border-left: 6px solid #0f172a !important; background-color: #fff; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-aleph shadow mb-4">
+
+    <nav class="navbar navbar-dark navbar-admin shadow mb-4">
         <div class="container-fluid px-4">
-            <span class="navbar-brand brand-title text-gold fs-3">El Aleph <span class="fs-6 font-monospace text-light ms-3">| RENDICIÓN Y ESTADÍSTICAS</span></span>
+            <span class="navbar-brand fw-bold">EVENTIA <span class="fs-6 font-monospace text-muted ms-3">| AUDITORÍA Y MÉTRICAS</span></span>
             <div>
                 <a href="/admin/eventos" class="btn btn-sm mx-1 rounded-pill fw-bold text-white bg-secondary">Eventos</a>
                 <a href="/admin/usuarios" class="btn btn-sm mx-1 rounded-pill fw-bold text-white bg-secondary">Clientes</a>
-                <a href="/admin/rendicion" class="btn btn-sm mx-1 rounded-pill fw-bold" style="background-color: #D4AF37; color: #1a1a1a;">📊 Rendición</a>
+                <a href="/admin/rendicion" class="btn btn-warning btn-sm mx-1 rounded-pill px-3 fw-bold" style="background-color: #f59e0b; color: #0f172a;">📊 Rendición</a>
                 <a href="/admin/dashboard" class="btn btn-sm mx-1 rounded-pill fw-bold text-white bg-dark ms-3">Panel Global</a>
             </div>
         </div>
     </nav>
 
     <div class="container pb-5">
-        <div class="card p-4 shadow-sm border-0 mb-4 bg-white">
+        <div class="card card-custom p-4 shadow-sm border-0 mb-4 bg-white">
             <form th:action="@{/admin/rendicion}" method="get" class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label class="form-label fw-bold text-dark">Rango de Tiempo:</label>
-                    <select name="mes" class="form-select border-2 bg-light fw-bold text-black">
-                        <option value="-1" th:selected="${mesSeleccionado == -1}" class="fw-bold text-primary">--- HISTÓRICO COMPLETO ---</option>
-                        <option value="0" th:selected="${mesSeleccionado == 0}">Solo mes actual</option>
+                    <label class="form-label fw-bold text-secondary small">Período de Tiempo:</label>
+                    <select name="mes" class="form-select border-2 fw-semibold text-black">
+                        <option value="-1" th:selected="${mesSeleccionado == -1}">--- MOSTRAR HISTÓRICO COMPLETO ---</option>
+                        <option value="0" th:selected="${mesSeleccionado == 0}">Solo mes de facturación actual</option>
                         <option value="1" th:selected="${mesSeleccionado == 1}">Enero</option>
-                        <option value="2" th:selected="${mesSeleccionado == MesSeleccionado}">Febrero</option>
+                        <option value="2" th:selected="${mesSeleccionado == 2}">Febrero</option>
                         <option value="3" th:selected="${mesSeleccionado == 3}">Marzo</option>
                         <option value="4" th:selected="${mesSeleccionado == 4}">Abril</option>
                         <option value="5" th:selected="${mesSeleccionado == 5}">Mayo</option>
@@ -51,59 +49,59 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-bold text-dark">Filtrar por Evento:</label>
-                    <select name="idEvento" class="form-select border-2 bg-light fw-bold text-black">
-                        <option value="0">--- Sumar todos los eventos ---</option>
+                    <label class="form-label fw-bold text-secondary small">Filtrar por Cuenta / Evento:</label>
+                    <select name="idEvento" class="form-select border-2 fw-semibold text-black">
+                        <option value="0">--- Consolidar todos los salones/eventos ---</option>
                         <option th:each="e : ${eventos}" th:value="${e.id_evento}" th:text="${e.nombre}" th:selected="${e.id_evento == idEventoSeleccionado}"></option>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn bg-aleph text-white w-100 fw-bold shadow-sm rounded-pill py-2 text-uppercase" style="letter-spacing: 1px;">Generar Reporte Aprobado</button>
+                    <button type="submit" class="btn btn-dark w-100 fw-bold shadow-sm rounded-pill py-2 text-uppercase">Calcular Métricas de Auditoría</button>
                 </div>
             </form>
         </div>
 
-        <h4 class="brand-title text-black mb-4 border-bottom pb-2">Asistencia y Recaudación <span class="text-success uppercase fs-6 fw-bold">(Solo Pagos Aprobados)</span></h4>
+        <h5 class="text-secondary fw-bold mb-4 border-bottom pb-2">Contador Consolidado de Asistencia <span class="text-success small fw-semibold">(Tickets validados y cobrados)</span></h5>
         
+        <!-- DASHBOARD DE CONTADORES COMPLETOS -->
         <div class="row mb-5 text-center g-3">
             <div class="col-6 col-md-3 col-xl-2">
-                <div class="card p-3 shadow-sm stat-card h-100">
-                    <h6 class="mb-1 text-muted fw-bold small uppercase">Adultos</h6>
-                    <h1 class="mb-0 fw-bold text-dark brand-title" th:text="${adultos}">0</h1>
+                <div class="card p-3 shadow-sm indicator-card h-100">
+                    <h6 class="mb-1 text-muted fw-bold small text-uppercase">Adultos</h6>
+                    <h2 class="mb-0 fw-bold text-dark" th:text="${adultos}">0</h2>
                 </div>
             </div>
             <div class="col-6 col-md-3 col-xl-2">
-                <div class="card p-3 shadow-sm stat-card h-100">
-                    <h6 class="mb-1 text-muted fw-bold small uppercase">Adolescentes</h6>
-                    <h1 class="mb-0 fw-bold text-dark brand-title" th:text="${adolescentes}">0</h1>
+                <div class="card p-3 shadow-sm indicator-card h-100">
+                    <h6 class="mb-1 text-muted fw-bold small text-uppercase">Adolescentes</h6>
+                    <h2 class="mb-0 fw-bold text-dark" th:text="${adolescentes}">0</h2>
                 </div>
             </div>
             <div class="col-6 col-md-3 col-xl-2">
-                <div class="card p-3 shadow-sm stat-card h-100">
-                    <h6 class="mb-1 text-muted fw-bold small uppercase">Menores</h6>
-                    <h1 class="mb-0 fw-bold text-dark brand-title" th:text="${menores}">0</h1>
+                <div class="card p-3 shadow-sm indicator-card h-100">
+                    <h6 class="mb-1 text-muted fw-bold small text-uppercase">Menores</h6>
+                    <h2 class="mb-0 fw-bold text-dark" th:text="${menores}">0</h2>
                 </div>
             </div>
             <div class="col-6 col-md-3 col-xl-2">
-                <div class="card p-3 shadow-sm stat-card h-100">
-                    <h6 class="mb-1 text-muted fw-bold small uppercase">Solo Fiesta</h6>
-                    <h1 class="mb-0 fw-bold text-dark brand-title" th:text="${fiesta}">0</h1>
+                <div class="card p-3 shadow-sm indicator-card h-100">
+                    <h6 class="mb-1 text-muted fw-bold small text-uppercase">Pases Fiesta</h6>
+                    <h2 class="mb-0 fw-bold text-dark" th:text="${fiesta}">0</h2>
                 </div>
             </div>
             
+            <!-- CONTENEDOR TOTAL GIGANTE -->
             <div class="col-md-12 col-xl-4">
-                <div class="card p-4 shadow-lg bg-aleph text-white h-100 d-flex justify-content-center border-0 position-relative overflow-hidden">
-                    <div class="position-absolute top-0 end-0" style="width: 60px; height: 100%; background-color: #D4AF37; opacity: 0.15; transform: skewX(-15deg);"></div>
-                    
-                    <h5 class="mb-2" style="color: #ddd; letter-spacing: 1px; font-weight: 400;">TOTAL PERSONAS: <span class="text-white fw-bold fs-3 ms-2 brand-title" th:text="${totalPersonas}">0</span></h5>
-                    <hr class="my-3 border-secondary w-75 mx-auto" style="opacity: 0.5;">
-                    <h6 class="mb-1 text-gold fw-bold uppercase" style="letter-spacing: 2px; font-size: 0.8rem;">Total Recaudado Aprobado</h6>
-                    <h1 class="mb-0 brand-title text-gold fw-bold" style="font-size: 3rem;" th:text="${'$' + totalRecaudado}">$0.0</h1>
+                <div class="card p-4 shadow-sm bg-dark text-white h-100 d-flex justify-content-center border-0 position-relative overflow-hidden">
+                    <div class="position-absolute top-0 end-0" style="width: 10px; height: 100%; background-color: #f59e0b;"></div>
+                    <h6 class="mb-1 text-muted fw-bold" style="letter-spacing: 1px;">TOTAL PERSONAS DECLARADAS: <span class="text-white fw-bold fs-4 ms-2 th-text" th:text="${totalPersonas}">0</span></h6>
+                    <hr class="my-2 border-secondary w-75 mx-auto">
+                    <h5 class="mb-0 text-warning small fw-bold uppercase mb-1">Monto Líquido Recaudado</h5>
+                    <h1 class="mb-0 text-success fw-bold" style="font-size: 2.8rem;" th:text="${'$' + totalRecaudado}">$0.0</h1>
                 </div>
             </div>
         </div>
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
